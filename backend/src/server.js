@@ -3,7 +3,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import authRoutes from "./routes/authRoutes.js"; 
+import authRoutes from "./routes/authRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
 import path from "path";
 
@@ -20,13 +20,9 @@ app.use(bodyParser.json());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
-// Now your routes are:
-// GET /api/auth/signup
-// GET /api/auth/signin
-// GET /api/auth/logout
 
-// make ready for deployment
-const frontendPath = path.join(__dirname, "../../frontend/dist");
+// Make ready for deployment
+const frontendPath = path.join(__dirname, "frontend/dist");
 if (process.env.NODE_ENV === "production") {
   // Serve frontend build
   app.use(express.static(frontendPath));
