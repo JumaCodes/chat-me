@@ -7,7 +7,7 @@
     "backend": "nodemon backend/src/server.js",
     "frontend": "yarn --cwd frontend dev",
     "build": "yarn --cwd frontend build",
-    "start": "yarn build && NODE_ENV=production node backend/src/server.js"
+    "start": "yarn build && cross-env NODE_ENV=production node backend/src/server.js"
   },
   "dependencies": {
     "bcryptjs": "2.4.3",
@@ -19,8 +19,9 @@
     "mongoose": "8.10.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10",
-    "concurrently": "^9.1.0"
+    "concurrently": "^9.1.0",
+    "cross-env": "^10.0.0",
+    "nodemon": "^3.1.10"
   },
   "repository": "https://github.com/JumaCodes/chat-me.git",
   "author": "JumaCodes <olumesestevejohn@gmail.com>",
