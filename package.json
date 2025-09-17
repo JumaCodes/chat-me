@@ -7,7 +7,7 @@
     "backend": "nodemon backend/src/server.js",
     "frontend": "yarn --cwd frontend dev",
     "build": "yarn --cwd frontend build",
-    "start": "node backend/src/server.js"
+    "start": "yarn build && NODE_ENV=production node backend/src/server.js"
   },
   "dependencies": {
     "bcryptjs": "2.4.3",
