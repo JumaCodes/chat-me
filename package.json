@@ -1,0 +1,28 @@
+{
+  "name": "chat-me-root",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "concurrently \"yarn backend\" \"yarn --cwd frontend dev\"",
+    "backend": "nodemon backend/src/server.js",
+    "frontend": "yarn --cwd frontend dev",
+    "build": "yarn --cwd frontend build",
+    "start": "node backend/src/server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "2.4.3",
+    "cookie-parser": "1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "16.4.7",
+    "express": "4.21.2",
+    "jsonwebtoken": "9.0.2",
+    "mongoose": "8.10.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10",
+    "concurrently": "^9.1.0"
+  },
+  "repository": "https://github.com/JumaCodes/chat-me.git",
+  "author": "JumaCodes <olumesestevejohn@gmail.com>",
+  "license": "MIT"
+}
