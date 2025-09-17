@@ -11,7 +11,7 @@ dotenv.config();
 
 const app = express();
 const __dirname = path.resolve();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000
 
 // Middleware
 app.use(cors());
