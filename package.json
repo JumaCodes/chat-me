@@ -26,5 +26,9 @@
   },
   "repository": "https://github.com/JumaCodes/chat-me.git",
   "author": "JumaCodes <olumesestevejohn@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+  "node": "22.x"
+}
 }
