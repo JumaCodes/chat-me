@@ -34,7 +34,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 // Example route
-app.get("/", (req, res) => {
+app.get("/", (_, res) => {
   res.send("Hello, world!");
 });
 
