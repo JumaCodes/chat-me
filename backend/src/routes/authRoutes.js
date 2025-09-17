@@ -7,7 +7,7 @@ router.get("/signup", (req, res) => {
 });
 
 router.get("/login", (req, res) => {
-  res.send("This is Login route");
+  res.send("This is Login routes!");
 });
 
 router.get("/logout", (req, res) => {
