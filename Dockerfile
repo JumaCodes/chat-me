@@ -5,21 +5,21 @@ WORKDIR /app
 # Copy root package.json + lockfile
 COPY package.json yarn.lock ./
 
-# Copy project manifests (so installs can be cached)
+# Copy project manifests (cache layer for faster builds)
 COPY frontend/package.json frontend/
 COPY backend/package.json backend/
 
-# Install dependencies for frontend + backend (include devDeps so vite is available)
+# Install deps (include devDeps so vite is available for build step)
 RUN yarn --cwd frontend install --frozen-lockfile --production=false \
     && yarn --cwd backend install --frozen-lockfile --production=false
 
-# Copy the rest of the source code
+# Copy full source
 COPY . .
 
-# Build frontend + backend (this calls your root "build" script)
+# Build frontend + backend (uses your root package.json "build" script)
 RUN yarn build
 
 EXPOSE 3000
 
-# Start the backend (this calls your root "start" script)
+# Start backend (uses your root "start" script)
 CMD ["yarn", "start"]
