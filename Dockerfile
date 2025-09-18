@@ -1,5 +1,5 @@
 # ---------- Stage 1: Build ----------
-FROM node:20 AS builder
+FROM node:22.12 AS builder
 WORKDIR /app
 
 # Copy manifests
@@ -18,7 +18,7 @@ RUN yarn build
 
 
 # ---------- Stage 2: Production ----------
-FROM node:20
+FROM node:22.12
 WORKDIR /app
 
 ENV NODE_ENV=production
