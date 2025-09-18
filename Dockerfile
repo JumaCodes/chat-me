@@ -1,25 +1,45 @@
-FROM node:20
-
+# ------------------------
+# Stage 1: Build
+# ------------------------
+FROM node:20 AS builder
 WORKDIR /app
 
-# Copy root package.json + lockfile
+# Copy root manifest
 COPY package.json yarn.lock ./
 
-# Copy project manifests (cache layer for faster builds)
+# Copy frontend + backend manifests
 COPY frontend/package.json frontend/
 COPY backend/package.json backend/
 
-# Install deps (include devDeps so vite is available for build step)
+# Install with devDependencies (vite is here)
 RUN yarn --cwd frontend install --frozen-lockfile --production=false \
     && yarn --cwd backend install --frozen-lockfile --production=false
 
-# Copy full source
+# Copy the rest of the code
 COPY . .
 
-# Build frontend + backend (uses your root package.json "build" script)
+# Build frontend and backend
 RUN yarn build
+
+
+# ------------------------
+# Stage 2: Production
+# ------------------------
+FROM node:20
+WORKDIR /app
+
+# Copy only production manifests
+COPY package.json yarn.lock ./
+COPY backend/package.json backend/
+
+# Install only production deps
+RUN yarn --cwd backend install --frozen-lockfile --production=true
+
+# Copy backend + built frontend from builder
+COPY --from=builder /app/backend ./backend
+COPY --from=builder /app/frontend ./frontend
 
 EXPOSE 3000
 
-# Start backend (uses your root "start" script)
+# Start the backend (frontend build is served by backend or static host)
 CMD ["yarn", "start"]
