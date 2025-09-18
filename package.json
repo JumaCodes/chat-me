@@ -3,32 +3,21 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-  "postinstall": "yarn --cwd frontend install",
-  "dev": "concurrently \"yarn backend\" \"yarn --cwd frontend dev\"",
-  "backend": "nodemon backend/src/server.js",
-  "frontend": "yarn --cwd frontend dev",
-  "build": "yarn --cwd frontend build",
-  "start": "yarn build && cross-env NODE_ENV=production node backend/src/server.js"
-},
-  "dependencies": {
-    "bcryptjs": "2.4.3",
-    "cookie-parser": "1.4.7",
-    "cors": "^2.8.5",
-    "dotenv": "16.4.7",
-    "express": "4.21.2",
-    "jsonwebtoken": "9.0.2",
-    "mongoose": "8.10.1"
+    "dev": "concurrently \"yarn backend\" \"yarn --cwd frontend dev\"",
+    "backend": "yarn --cwd backend dev",
+    "frontend": "yarn --cwd frontend dev",
+    "build": "yarn --cwd frontend build",
+    "start": "cross-env NODE_ENV=production node backend/src/server.js"
   },
   "devDependencies": {
     "concurrently": "^9.1.0",
-    "cross-env": "7.0.3",
-    "nodemon": "^3.1.10"
+    "cross-env": "7.0.3"
   },
   "repository": "https://github.com/JumaCodes/chat-me.git",
   "author": "JumaCodes <olumesestevejohn@gmail.com>",
   "license": "MIT",
   "type": "module",
   "engines": {
-  "node": "22.x"
-}
+    "node": "22.x"
+  }
 }

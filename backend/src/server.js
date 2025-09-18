@@ -23,7 +23,7 @@ app.use("/api/messages", messageRoutes);
 
 // Make ready for deployment
 const frontendPath = path.join(__dirname, "frontend/dist");
-if (process.env.NODE_ENV && (process.env.NODE_ENV === "production")) {
+if (process.env.NODE_ENV === "production") {
   // Serve frontend build
   app.use(express.static(frontendPath));
 
