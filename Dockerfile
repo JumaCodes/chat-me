@@ -1,45 +1,40 @@
-# ------------------------
-# Stage 1: Build
-# ------------------------
+# ---------- Stage 1: Build ----------
 FROM node:20 AS builder
 WORKDIR /app
 
-# Copy root manifest
+# Copy manifests
 COPY package.json yarn.lock ./
-
-# Copy frontend + backend manifests
 COPY frontend/package.json frontend/
 COPY backend/package.json backend/
 
-# Install with devDependencies (vite is here)
-RUN yarn --cwd frontend install --frozen-lockfile --production=false \
-    && yarn --cwd backend install --frozen-lockfile --production=false
+# Install all deps (root + workspaces)
+RUN yarn install --frozen-lockfile
 
-# Copy the rest of the code
+# Copy source
 COPY . .
 
-# Build frontend and backend
+# Build frontend & backend
 RUN yarn build
 
 
-# ------------------------
-# Stage 2: Production
-# ------------------------
+# ---------- Stage 2: Production ----------
 FROM node:20
 WORKDIR /app
 
-# Copy only production manifests
+ENV NODE_ENV=production
+
+# Copy only needed files
 COPY package.json yarn.lock ./
 COPY backend/package.json backend/
 
-# Install only production deps
-RUN yarn --cwd backend install --frozen-lockfile --production=true
+# Install only backend prod deps
+RUN yarn --cwd backend install --frozen-lockfile --production
 
-# Copy backend + built frontend from builder
+# Bring in compiled code
 COPY --from=builder /app/backend ./backend
 COPY --from=builder /app/frontend ./frontend
 
 EXPOSE 3000
 
-# Start the backend (frontend build is served by backend or static host)
 CMD ["yarn", "start"]
+

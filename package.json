@@ -2,16 +2,12 @@
   "name": "chat-me",
   "private": true,
   "version": "1.0.0",
-  "engines": {
-    "node": ">=20.0.0"
-  },
   "scripts": {
-  "install-all": "yarn --cwd backend install && yarn --cwd frontend install",
-  "build": "yarn --cwd frontend build && yarn --cwd backend build",
-  "start": "yarn --cwd backend start"
-},
-  "repository": "https://github.com/JumaCodes/chat-me.git",
-  "author": "JumaCodes <olumesestevejohn@gmail.com>",
-  "license": "MIT",
+    "install-all": "yarn --cwd backend install && yarn --cwd frontend install",
+    "build": "yarn --cwd frontend build && yarn --cwd backend build",
+    "start": "yarn --cwd backend start"
+  },
+  "workspaces": ["frontend", "backend"],
+  "engines": { "node": ">=20.0.0" },
   "type": "module"
 }
