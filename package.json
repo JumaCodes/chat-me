@@ -3,12 +3,13 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "dev": "concurrently \"yarn backend\" \"yarn --cwd frontend dev\"",
-    "backend": "yarn --cwd backend dev",
-    "frontend": "yarn --cwd frontend dev",
-    "build": "yarn --cwd frontend build",
-    "start": "cross-env NODE_ENV=production node backend/src/server.js"
-  },
+  "dev": "concurrently \"yarn backend\" \"yarn --cwd frontend dev\"",
+  "backend": "yarn --cwd backend dev",
+  "frontend": "yarn --cwd frontend dev",
+  "build": "yarn --cwd frontend build",
+  "postbuild": "cp -r frontend/dist backend/frontend",
+  "start": "cross-env NODE_ENV=production node backend/src/server.js"
+},
   "devDependencies": {
     "concurrently": "^9.1.0",
     "cross-env": "7.0.3"
