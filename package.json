@@ -3,22 +3,12 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-  "dev": "concurrently \"yarn backend\" \"yarn --cwd frontend dev\"",
-  "backend": "yarn --cwd backend dev",
-  "frontend": "yarn --cwd frontend dev",
-  "build": "yarn --cwd frontend build",
-  "postbuild": "cp -r frontend/dist backend/frontend",
-  "start": "cross-env NODE_ENV=production node backend/src/server.js"
+  "install-all": "yarn --cwd backend install && yarn --cwd frontend install",
+  "build": "yarn --cwd frontend build && yarn --cwd backend build",
+  "start": "yarn --cwd backend start"
 },
-  "devDependencies": {
-    "concurrently": "^9.1.0",
-    "cross-env": "7.0.3"
-  },
   "repository": "https://github.com/JumaCodes/chat-me.git",
   "author": "JumaCodes <olumesestevejohn@gmail.com>",
   "license": "MIT",
-  "type": "module",
-  "engines": {
-    "node": "22.x"
-  }
+  "type": "module"
 }
