@@ -104,6 +104,13 @@ export const SignUp = async (req, res) => {
 export const Login = async (req, res) => {
   const { email, username, password } = req.body;
 
+  if ((!email && !username) || !password) {
+    return res
+      .status(400)
+      .json({ message: "Email/Username and password are required" });
+  }
+
+
   try {
     // Find user by email OR username
     const user = await User.findOne({
