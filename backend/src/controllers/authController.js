@@ -100,3 +100,49 @@ export const SignUp = async (req, res) => {
     res.status(500).json({ message: "Internal server error." });
   }
 };
+
+export const Login = async (req, res) => {
+  const { email, username, password } = req.body;
+
+  try {
+    // Find user by email OR username
+    const user = await User.findOne({
+      $or: [{ email }, { username }],
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    // Compare password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    // Generate token (assuming you already have a util for this)
+    const token = generateToken(user._id, res);
+
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      user: {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        username: user.username,
+        email: user.email,
+        profilePicture: user.profilePicture,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+export const Logout = async (_, res) => { 
+  res.cookie("token", "", { maxAge: 0 });
+  res.status(200).json({message: "Logged out successfully"})
+};
