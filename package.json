@@ -9,7 +9,7 @@
   },
   "workspaces": ["frontend", "backend"],
   "engines": {
-  "node": "20.18.1"
+  "node": "^20"
 },
   "type": "module"
 }
