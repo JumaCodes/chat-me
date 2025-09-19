@@ -37,3 +37,6 @@ COPY --from=builder /app/frontend ./frontend
 
 EXPOSE 3000
 CMD ["yarn", "start"]
+
+# WNbZHWv8RdUNI8i0
+# codejumama_db_user
