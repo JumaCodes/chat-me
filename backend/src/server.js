@@ -4,12 +4,15 @@ import path from "path";
 
 import authRoutes from "./routes/authRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
+import { connectDB } from "./lib/db.js";
 
 dotenv.config();
 
 const app = express();
 const __dirname = path.resolve();
 const PORT = process.env.PORT || 3000;
+
+app.use(express.json()); //  red.body middleware to parse JSON request bodies
 
 // API routes
 app.use("/api/auth", authRoutes);
@@ -24,4 +27,5 @@ if (process.env.NODE_ENV === "production") {
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
+  connectDB();
 });
