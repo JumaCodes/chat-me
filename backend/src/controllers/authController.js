@@ -1,3 +1,5 @@
+import { sendWelcomeEmail } from "../emails/emailhandlers.js";
+import { ENV } from "../lib/env.js";
 import { generateToken } from "../lib/utils.js";
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
@@ -43,7 +45,11 @@ export const SignUp = async (req, res) => {
     }
 
     // ✅ Check if username already exists
-    const existingUsername = await User.findOne({ username });
+    // Check if username exists (case-insensitive)
+    const existingUsername = await User.findOne({
+      username: { $regex: new RegExp(`^${username}$`, "i") },
+    });
+
     if (existingUsername) {
       return res.status(400).json({ message: "Username already taken." });
     }
@@ -61,21 +67,34 @@ export const SignUp = async (req, res) => {
       password: hashedPassword,
     });
 
-   const savedUser = await newUser.save();
+    if (newUser) {
+      const savedUser = await newUser.save();
+      // ✅ Generate JWT token and set cookie
+      generateToken(savedUser._id, res);
 
-    // ✅ Generate JWT token and set cookie
-    generateToken(savedUser._id, res);
+      // ✅ Send response
+      res.status(201).json({
+        message: "User registered successfully!",
+        _id: savedUser._id,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        username: newUser.username,
+        email: newUser.email,
+        profilePicture: newUser.profilePicture,
+      });
 
-    // ✅ Send response
-    res.status(201).json({
-      message: "User registered successfully!",
-      _id: savedUser._id,
-      firstName: savedUser.firstName,
-      lastName: savedUser.lastName,
-      username: savedUser.username,
-      email: savedUser.email,
-      profilePicture: savedUser.profilePicture,
-    });
+      try {
+        await sendWelcomeEmail({
+          email: savedUser.email,
+          name: savedUser.username,
+          clientURL: ENV.CLIENT_URL,
+        });
+      } catch (error) {
+        console.error("Failed to send welcome email:", error);
+      }
+    } else {
+      res.status(400).json({ message: "Invalid user data" });
+    }
   } catch (error) {
     console.error("Error during signup:", error);
     res.status(500).json({ message: "Internal server error." });
