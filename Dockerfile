@@ -1,5 +1,5 @@
 # ---------- Stage 1: Build ----------
-FROM node:20.19-bullseye AS builder
+FROM node:20.18-bullseye AS builder
 WORKDIR /app
 
 # Copy only manifests (no node_modules)
@@ -14,7 +14,7 @@ RUN yarn build
 
 
 # ---------- Stage 2: Production ----------
-FROM node:20.19-bullseye
+FROM node:20.18-bullseye
 WORKDIR /app
 
 ENV NODE_ENV=production
