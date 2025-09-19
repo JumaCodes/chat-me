@@ -61,20 +61,20 @@ export const SignUp = async (req, res) => {
       password: hashedPassword,
     });
 
-    await newUser.save();
+   const savedUser = await newUser.save();
 
     // ✅ Generate JWT token and set cookie
-    generateToken(newUser._id, res);
+    generateToken(savedUser._id, res);
 
     // ✅ Send response
     res.status(201).json({
       message: "User registered successfully!",
-      _id: newUser._id,
-      firstName: newUser.firstName,
-      lastName: newUser.lastName,
-      username: newUser.username,
-      email: newUser.email,
-      profilePicture: newUser.profilePicture,
+      _id: savedUser._id,
+      firstName: savedUser.firstName,
+      lastName: savedUser.lastName,
+      username: savedUser.username,
+      email: savedUser.email,
+      profilePicture: savedUser.profilePicture,
     });
   } catch (error) {
     console.error("Error during signup:", error);
