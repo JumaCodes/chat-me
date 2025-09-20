@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import cookieParser from "cookie-parser";
 
 import authRoutes from "./routes/authRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
@@ -7,6 +8,8 @@ import { connectDB } from "./lib/db.js";
 import { ENV } from "./lib/env.js";
 
 const app = express();
+app.use(cookieParser());
+
 const __dirname = path.resolve();
 const PORT = ENV.PORT || 3000;
 
