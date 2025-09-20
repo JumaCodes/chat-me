@@ -1,4 +1,5 @@
 import { sendWelcomeEmail } from "../emails/emailhandlers.js";
+import cloudinary from "../lib/cloudinary.js";
 import { ENV } from "../lib/env.js";
 import { generateToken } from "../lib/utils.js";
 import User from "../models/User.js";
@@ -152,4 +153,42 @@ export const Login = async (req, res) => {
 export const Logout = async (_, res) => { 
   res.cookie("token", "", { maxAge: 0 });
   res.status(200).json({message: "Logged out successfully"})
+};
+
+export const Profile = async (req, res) => {
+  try {
+    const { profilePicture } = req.body;
+
+    if (!profilePicture) {
+      return res.status(400).json({ message: "Profile picture is required" });
+    }
+
+    const userId = req.user._id;
+
+    // Upload profile picture (can be base64 or url)
+    const uploadResult = await cloudinary.uploader.upload(profilePicture, {
+      folder: "user_profiles",
+      fetch_format: "auto",
+      quality: "auto",
+    });
+
+    // Update user profile
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { profilePicture: uploadResult.secure_url },
+      { new: true }
+    ).select("-password");
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error("Error in updating profile:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
