@@ -2,7 +2,7 @@ import { sendWelcomeEmail } from "../emails/emailhandlers.js";
 import cloudinary from "../lib/cloudinary.js";
 import { ENV } from "../lib/env.js";
 import { generateToken } from "../lib/utils.js";
-import User from "../models/User.js";
+import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 
 export const SignUp = async (req, res) => {
@@ -111,7 +111,6 @@ export const Login = async (req, res) => {
       .json({ message: "Email/Username and password are required" });
   }
 
-
   try {
     // Find user by email OR username
     const user = await User.findOne({
@@ -149,10 +148,9 @@ export const Login = async (req, res) => {
   }
 };
 
-
-export const Logout = async (_, res) => { 
+export const Logout = async (_, res) => {
   res.cookie("token", "", { maxAge: 0 });
-  res.status(200).json({message: "Logged out successfully"})
+  res.status(200).json({ message: "Logged out successfully" });
 };
 
 export const Profile = async (req, res) => {
