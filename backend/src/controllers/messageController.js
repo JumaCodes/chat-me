@@ -51,6 +51,7 @@ export const sendMessage = async (req, res) => {
             return res.status(400).json({ message: "You cannot send message to yourself" });
         }
 
+        // todo: change the spelling of reseiverExists to receiverExists
         const reseiverExists = await User.exists({ _id: receiverId });
         if (!reseiverExists) {
             return res.status(404).json({ message: "Receiver not found" });
