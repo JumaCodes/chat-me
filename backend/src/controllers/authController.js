@@ -190,3 +190,26 @@ export const Profile = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const checkUsername = async (req, res) => {
+  try {
+    const { username } = req.query;
+    if (!username) {
+      return res.status(400).json({ error: "Username is required" });
+    }
+
+    // Case-insensitive search
+    const existingUser = await User.findOne({
+      username: { $regex: `^${username}$`, $options: "i" },
+    });
+
+    if (existingUser) {
+      return res.json({ exists: true });
+    }
+
+    res.json({ exists: false });
+  } catch (err) {
+    console.error("Error checking username:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
