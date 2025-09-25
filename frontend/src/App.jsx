@@ -6,6 +6,8 @@ import SignUpPage from "./pages/SignUpPage";
 import { useAuthStore } from "./zustand/store/useAuthStore";
 import Loading from "./components/Loading";
 import ProtectedRoute from "./components/ProtectedRoutes";
+import VerifyEmail from "./pages/VerifyEmail";
+
 
 import {Toaster} from 'react-hot-toast';
 
@@ -24,12 +26,12 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-slate-900 relative flex items-center justify-center p-4 overflow-hidden">
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px,linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px]" />
-      {/* <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px]" /> */}
+      {/* <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px,linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px]" /> */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px]" />
       <div className="absolute top-0 -left-4 size-96 bg-pink-500 opacity-20 blur-[100px]" />
       <div className="absolute bottom-0 -right-4 size-96 bg-cyan-500 opacity-20 blur-[100px]" />
 
-      <div className="relative z-20 w-full">
+      <div className="z-20 w-full">
         <Routes>
           {/* Protected route */}
           <Route
@@ -55,6 +57,14 @@ const App = () => {
             element={
               <ProtectedRoute requiresAuth={false}>
                 <SignUpPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/verify-email"
+            element={
+              <ProtectedRoute requiresAuth={false}>
+                <VerifyEmail />
               </ProtectedRoute>
             }
           />

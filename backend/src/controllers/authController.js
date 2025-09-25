@@ -1,121 +1,109 @@
-import { sendWelcomeEmail } from "../emails/emailhandlers.js";
 import cloudinary from "../lib/cloudinary.js";
-import { ENV } from "../lib/env.js";
-import { generateToken } from "../lib/utils.js";
-import User from "../models/userModel.js";
+import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import User from "../models/userModel.js";
+import { ENV } from "../lib/env.js";
+import { generateToken, generateEmailVerificationToken } from "../lib/utils.js";
+import { sendVerificationEmail } from "../emails/emailhandlers.js";
 
 export const SignUp = async (req, res) => {
   const { firstName, lastName, username, email, password } = req.body;
 
   try {
-    // ✅ Validate required fields
-    if (!firstName || !lastName || !username || !email || !password) {
-      return res.status(400).json({ message: "All fields are required." });
-    }
-
-    // ✅ Password validation
-    if (password.length < 6) {
+    const existingUser = await User.findOne({
+      $or: [{ email }, { username }],
+    });
+    if (existingUser) {
       return res
         .status(400)
-        .json({ message: "Password must be at least 6 characters long." });
+        .json({ message: "Email or username already taken" });
     }
 
-    if (!/[A-Z]/.test(password)) {
-      return res.status(400).json({
-        message: "Password must include at least one uppercase letter.",
-      });
-    }
-
-    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
-      return res.status(400).json({
-        message: "Password must include at least one special character.",
-      });
-    }
-
-    // ✅ Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({ message: "Invalid email format." });
-    }
-
-    // ✅ Check if email already exists
-    const existingEmail = await User.findOne({ email });
-    if (existingEmail) {
-      return res.status(400).json({ message: "Email already in use." });
-    }
-
-    // ✅ Check if username already exists
-    // Check if username exists (case-insensitive)
-    const existingUsername = await User.findOne({
-      username: { $regex: new RegExp(`^${username}$`, "i") },
-    });
-
-    if (existingUsername) {
-      return res.status(400).json({ message: "Username already taken." });
-    }
-
-    // ✅ Hash the password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // ✅ Create new user
     const newUser = new User({
       firstName,
       lastName,
       username,
       email,
       password: hashedPassword,
+      isVerified: false,
     });
 
-    if (newUser) {
-      const savedUser = await newUser.save();
-      // ✅ Generate JWT token and set cookie
-      generateToken(savedUser._id, res);
+    const savedUser = await newUser.save();
 
-      // ✅ Send response
-      res.status(201).json({
-        message: "User registered successfully!",
-        _id: savedUser._id,
-        firstName: newUser.firstName,
-        lastName: newUser.lastName,
-        username: newUser.username,
-        email: newUser.email,
-        profilePicture: newUser.profilePicture,
-      });
+    // Generate verification token
+    const verifyToken = generateEmailVerificationToken(savedUser._id);
 
-      try {
-        await sendWelcomeEmail({
-          email: savedUser.email,
-          name: savedUser.username,
-          clientURL: ENV.CLIENT_URL,
-        });
-      } catch (error) {
-        console.error("Failed to send welcome email:", error);
-      }
-    } else {
-      res.status(400).json({ message: "Invalid user data" });
-    }
+    // Send backend verification link
+    const verifyUrl = `${ENV.SERVER_URL}/api/auth/verify-email?token=${verifyToken}`;
+
+    await sendVerificationEmail({
+      email: savedUser.email,
+      name: savedUser.username,
+      verifyUrl,
+    });
+
+    res.status(201).json({
+      message: "Account created. Please check your email to verify.",
+    });
   } catch (error) {
     console.error("Error during signup:", error);
     res.status(500).json({ message: "Internal server error." });
   }
 };
 
-export const Login = async (req, res) => {
-  const { email, username, password } = req.body;
+export const VerifyEmail = async (req, res) => {
+  try {
+    const { token } = req.query;
+    if (!token) return res.status(400).send("Invalid verification link");
 
-  if ((!email && !username) || !password) {
+    const decoded = jwt.verify(token, ENV.JWT_SECRET);
+    const user = await User.findById(decoded.userId);
+    if (!user) return res.status(400).send("Invalid token or user not found");
+
+    if (!user.isVerified) {
+      user.isVerified = true;
+      await user.save();
+    }
+
+    // Generate JWT token and save in cookie
+    generateToken(user._id, res);
+
+    // Redirect to frontend chat page in the same tab
+    res.redirect(`${ENV.CLIENT_URL}/?verified=true`);
+  } catch (error) {
+    console.error("Error verifying email:", error);
+    res.status(400).send("Invalid or expired token");
+  }
+};
+
+
+export const Login = async (req, res) => {
+  const { identifier, password } = req.body;
+
+  if (!identifier || !password) {
     return res
       .status(400)
       .json({ message: "Email/Username and password are required" });
   }
 
+
   try {
-    // Find user by email OR username
+    // Find user by email OR username (case-insensitive for username)
     const user = await User.findOne({
-      $or: [{ email }, { username }],
+      $or: [
+        { email: identifier },
+        { username: { $regex: `^${identifier}$`, $options: "i" } },
+      ],
     });
+
+     if (!user.isVerified) {
+       return res
+         .status(403)
+         .json({ message: "Please verify your email first" });
+     }
 
     if (!user) {
       return res.status(400).json({ message: "Invalid credentials" });
@@ -127,7 +115,7 @@ export const Login = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    // Generate token (assuming you already have a util for this)
+    // Generate token (your util function)
     const token = generateToken(user._id, res);
 
     res.status(200).json({
@@ -143,7 +131,7 @@ export const Login = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error(error);
+    console.error("Login error:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -152,6 +140,7 @@ export const Logout = async (_, res) => {
   res.cookie("token", "", { maxAge: 0 });
   res.status(200).json({ message: "Logged out successfully" });
 };
+
 
 export const Profile = async (req, res) => {
   try {

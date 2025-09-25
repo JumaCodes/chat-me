@@ -1,5 +1,12 @@
 import express from "express";
-import { checkUsername, Login, Logout, Profile, SignUp } from "../controllers/authController.js";
+import {
+  checkUsername,
+  Login,
+  Logout,
+  Profile,
+  SignUp,
+  VerifyEmail,
+} from "../controllers/authController.js";
 import { Protect } from "../middlewares/authMiddleware.js";
 import { arcjetProtection } from "../middlewares/arcjetMiddleware.js";
 
@@ -14,6 +21,7 @@ router.post("/logout", Logout);
 
 router.put("/update-profile", Protect, Profile);
 router.get("/check-username", checkUsername);
+router.get("/verify-email", VerifyEmail);
 router.get("/check", Protect, (req, res) => { res.status(200).json({ user: req.user, message: "Token is valid" })});
 
 

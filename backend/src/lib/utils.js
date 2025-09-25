@@ -18,4 +18,15 @@ export const generateToken = (userId, res) => {
     });
 
     return token;
- };
+};
+ 
+
+export const generateEmailVerificationToken = (userId) => {
+  const { JWT_SECRET } = ENV;
+  if (!JWT_SECRET) {
+    throw new Error("JWT_SECRET is not defined in environment variables");
+  }
+
+  // shorter expiry for email verification
+  return jwt.sign({ userId }, JWT_SECRET, { expiresIn: "1d" });
+};
