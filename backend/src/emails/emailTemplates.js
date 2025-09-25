@@ -1,4 +1,4 @@
-export function createWelcomeEmailTemplate(name, clientURL) {
+export function createVerificationEmailTemplate(name, verifyUrl) {
   return `
   <!DOCTYPE html>
   <html lang="en">
@@ -19,6 +19,7 @@ export function createWelcomeEmailTemplate(name, clientURL) {
       <div style="background-color: #f8f9fa; padding: 25px; border-radius: 10px; margin: 25px 0; border-left: 4px solid #36D1DC;">
         <p style="font-size: 16px; margin: 0 0 15px 0;"><strong>Get started in just a few steps:</strong></p>
         <ul style="padding-left: 20px; margin: 0;">
+          <li style="margin-bottom: 10px;">Verify your email</li>
           <li style="margin-bottom: 10px;">Set up your profile picture</li>
           <li style="margin-bottom: 10px;">Find and add your contacts</li>
           <li style="margin-bottom: 10px;">Start a conversation</li>
@@ -27,7 +28,7 @@ export function createWelcomeEmailTemplate(name, clientURL) {
       </div>
       
       <div style="text-align: center; margin: 30px 0;">
-        <a href=${clientURL} style="background: linear-gradient(to right, #36D1DC, #5B86E5); color: white; text-decoration: none; padding: 12px 30px; border-radius: 50px; font-weight: 500; display: inline-block;">Open Chat-Me</a>
+        <a href=${verifyUrl} style="background: linear-gradient(to right, #36D1DC, #5B86E5); color: white; text-decoration: none; padding: 12px 30px; border-radius: 50px; font-weight: 500; display: inline-block;">Verify Email</a>
       </div>
       
       <p style="margin-bottom: 5px;">If you need any help or have questions, we're always here to assist you.</p>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuthStore } from "../zustand/store/useAuthStore";
 import BoarderAnimatedContainer from "../components/BoarderAnimatedContainer";
-import LoginImg from "/login.png";
+import SignUpImg from "/signup.png";
 import {
   MessageCircleIcon,
   LockIcon,
@@ -14,7 +14,7 @@ import {
   CheckCircle2,
   Circle,
 } from "lucide-react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 const SignUpPage = () => {
   const { signup, isSigningUp } = useAuthStore();
@@ -30,9 +30,11 @@ const SignUpPage = () => {
   const [usernameError, setUsernameError] = useState("");
   const [usernameSuggestions, setUsernameSuggestions] = useState([]);
 
+  const navigate = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    signup(formData);
+    signup(formData, navigate); // 👈 pass navigate
   };
 
   // Capitalize helper
@@ -60,7 +62,7 @@ const SignUpPage = () => {
 
     try {
       // Replace this fetch URL with your backend endpoint
-      const res = await fetch(`/api/check-username?username=${username}`);
+      const res = await fetch(`/api/auth/check-username?username=${username}`);
       const data = await res.json();
 
       if (data.exists) {
@@ -299,7 +301,7 @@ const SignUpPage = () => {
             <div className="hidden md:w-1/2 md:flex items-center justify-center p-6 bg-gradient-to-bl from-slate-800/20 to-transparent">
               <div>
                 <img
-                  src={LoginImg}
+                  src={SignUpImg}
                   alt="Sign Up Image"
                   className="object-contain w-full h-auto"
                 />

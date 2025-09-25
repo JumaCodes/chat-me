@@ -1,18 +1,18 @@
 import { resendClient, sender } from "../lib/resend.js";
-import { createWelcomeEmailTemplate } from "./emailTemplates.js";
+import { createVerificationEmailTemplate } from "./emailTemplates.js";
 
-export const sendWelcomeEmail = async ({ email, name, clientURL }) => {
+export const sendVerificationEmail = async ({ email, name, verifyUrl }) => {
   try {
     const data = await resendClient.emails.send({
       from: `Chat-Me <${sender.email}>`,
       to: email,
-      subject: "Welcome to Chat-Me!",
-      html: createWelcomeEmailTemplate(name, clientURL),
+      subject: "Verify your email - Chat-Me",
+      html: createVerificationEmailTemplate(name, verifyUrl),
     });
 
-    console.log("Welcome Email sent successfully", data);
+    console.log("Verification email sent successfully", data);
   } catch (error) {
-    console.error("Failed to send welcome email:", error);
-    throw new Error("Failed to send welcome email");
+    console.error("Failed to send verification email:", error);
+    throw new Error("Failed to send verification email");
   }
 };
