@@ -51,9 +51,9 @@ export const sendMessage = async (req, res) => {
             return res.status(400).json({ message: "You cannot send message to yourself" });
         }
 
-        // todo: change the spelling of reseiverExists to receiverExists
-        const reseiverExists = await User.exists({ _id: receiverId });
-        if (!reseiverExists) {
+        // todo: change the spelling of receiverExists to receiverExists
+        const receiverExists = await User.exists({ _id: receiverId });
+        if (!receiverExists) {
             return res.status(404).json({ message: "Receiver not found" });
         }
 
@@ -86,7 +86,8 @@ export const getChatPartners = async (req, res) => {
     try {
         const loggedInUserId = req.user._id;
 
-        // find all the messagewhere the logged-in user is either sender or receiver
+        // find all the message where the logged-in user is either sender or receiver 
+        // Also find unique users ids from
         const messages = await Message.find({
           $or: [{ senderId: loggedInUserId }, { receiverId: loggedInUserId }],
         });
