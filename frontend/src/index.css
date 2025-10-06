@@ -60,7 +60,7 @@ body {
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(
     to bottom,
-    #ec4899, /* Tailwind pink-500 */
+    #06b6d4  /* Tailwind cyan-500 */
     #06b6d4  /* Tailwind cyan-500 */
   );
   border-radius: 6px;
@@ -68,14 +68,14 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(
-    to bottom,
-    #f472b6, /* lighter pink */
-    #22d3ee  /* lighter cyan */
+    to bottom, 
+    #22d3ee,  /* lighter cyan */
+    #22d3ee,  /* lighter cyan */
   );
 }
 
 /* Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #ec4899 #0f172a;
+  scrollbar-color: #22d3ee #0f172a;
 }

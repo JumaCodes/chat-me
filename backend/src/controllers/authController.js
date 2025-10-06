@@ -72,7 +72,7 @@ export const VerifyEmail = async (req, res) => {
     generateToken(user._id, res);
 
     // Redirect to frontend chat page in the same tab
-    res.redirect(`${ENV.CLIENT_URL}/?verified=true`);
+    res.redirect(`${ENV.CLIENT_URL}`);
   } catch (error) {
     console.error("Error verifying email:", error);
     res.status(400).send("Invalid or expired token");
