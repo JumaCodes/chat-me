@@ -29,7 +29,7 @@ const LoginPage = () => {
    } catch (error) {
      // Clear only the password if login fails
      console.error("Login failed:", error);
-     setFormData((prev) => ({ ...prev, password: "" }));
+     setFormData((prev) => ({ ...prev}));
      setShowPassword(false);
    }
  };

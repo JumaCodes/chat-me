@@ -25,11 +25,11 @@ const ChatList = () => {
         >
           <img
             src={chat.profilePicture || "/avatar.png"}
-            alt={chat.fullName}
+            alt={chat.username}
             className="w-10 h-10 rounded-full object-cover"
           />
           <div>
-            <h4 className="text-slate-200 font-medium">{chat.fullName}</h4>
+            <h4 className="text-slate-200 font-medium">{chat.username}</h4>
             <p className="text-slate-400 text-sm truncate w-40">
               {chat.lastMessage || "No messages yet"}
             </p>
