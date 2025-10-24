@@ -20,7 +20,7 @@ app.use(cookieParser());
 const __dirname = path.resolve();
 const PORT = ENV.PORT || 3000;
 
-app.use(express.json()); //  red.body middleware to parse JSON request bodies
+app.use(express.json({limit: "10mb"})); //  red.body middleware to parse JSON request bodies
 
 // API routes
 app.use("/api/auth", authRoutes);
